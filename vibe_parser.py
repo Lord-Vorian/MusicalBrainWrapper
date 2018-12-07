@@ -16,7 +16,7 @@ def get_files():
   for abspath, intermediate, file_names in os.walk(topPath):
     if file_names:
       for file_name in file_names:
-        if os.path.splitext(file_name)[-1] == '.mp3':
+        if os.path.splitext(file_name)[-1] == '.mp3':  # TODO add other filetypes
           file_list.append(os.path.join(abspath, file_name))
   return file_list
 
@@ -26,7 +26,7 @@ def get_bpm_list(file_list):
   Compute BPM of each given file and return
   list of [file, bpm, beat times (in seconds)]
   """
-  bpm_labels = [] # todo Only process new files
+  bpm_labels = [] # TODO Only process new files
   for file in file_list:
     #Y is time series, sr is sample rate
     y, sr = librosa.load(file)
@@ -44,7 +44,7 @@ def csv_generator(data):
   if not os.path.isdir(working_dir):
     os.mkdir(working_dir)
   with open(os.path.join(working_dir, 'tempo_list.csv'), 'w') as write_file:
-    writer = csv.writer(write_file)
+    writer = csv.writer(write_file)  # TODO add header for reading as table
     writer.writerows(data)
 
 
