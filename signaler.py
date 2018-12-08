@@ -22,9 +22,12 @@ def invader_detect():
   image.save('temp.png')
   if red_count > 1000:
     print('Red Invader detected')
-  if pink_count > 50:
+    return True
+  elif pink_count > 50:
     print('Pink Invader detected')
-
+    return True
+  else:
+    return False
 
 def blink():
   """Run detection func at a set time interval"""
