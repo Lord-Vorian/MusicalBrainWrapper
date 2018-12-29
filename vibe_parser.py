@@ -77,17 +77,17 @@ def test():
   # csv_generator(bpm_labels)
   # print('{} seconds to write csv'.format(int(time.time())-start_time))
     elapsed = 0
-    since_last_invader = 0
+    invasions = 0
+    invading = False
     while elapsed < 3600:
       # TODO loop chill bpm
       elapsed += 1
-      since_last_invader -= 1
       if not int(time.time()) % 5:
-        if signaler.invader_detect():
+        if signaler.invader_detect() and not invading:
           # TODO play fast bpm
-          since_last_invader = 30
-      if since_last_invader < 1:
-        # TODO loop chill bpm
-        pass
-
+          print('New invasion # {}'.format(invasions))
+          invasions += 1
+          invading = True
+        elif not signaler.invader_detect():
+          invading = False
       time.sleep(1)
