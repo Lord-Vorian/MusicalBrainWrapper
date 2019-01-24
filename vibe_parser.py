@@ -8,41 +8,59 @@ import os, csv, getpass, time
 import librosa
 
 
-topPath = 'C:\\Users\\Vorian\\Music'
+TOP_PATH = 'C:\\Users\\Vorian\\Music'
+WORKING_DIR = os.path.join('data', getpass.getuser())
 
 
 def get_files():
-  """Take a given path and retun absolute path of all supported music files"""
+  """
+  Take a given path and return absolute path of all supported and new
+  music files.
+  """
   file_list = []
-  csv_cleaned = []
-  csv_reader = []
-  if os.path.isdir(os.path.join('data', getpass.getuser(),'tempo_list.csv')):
-    file = open(os.path.join('data', getpass.getuser(),'tempo_list.csv'),'r')
-    csv_reader = csv.reader(file)
+  new_tracks = []
+  csv_current = []
+  working_dir = os.path.join('data', getpass.getuser())
 
-  for row in csv_reader:
-    if row:
-      csv_cleaned.append(row)
-  print(csv_cleaned)
-  for abspath, intermediate, file_names in os.walk(topPath):
+  for abspath, intermediate, file_names in os.walk(TOP_PATH):
     if file_names:
       for file_name in file_names:
-        if os.path.splitext(file_name)[-1] == '.mp3' and \
-          file_name not in [row[0] for row in csv_cleaned]:  # TODO add other filetypes
+        if os.path.splitext(file_name)[-1] == '.mp3':  # TODO add other filetypes
           file_list.append(os.path.join(abspath, file_name))
 
+  if os.path.isdir(working_dir):
+    with open(os.path.join(working_dir,'tempo_list.csv'),'r')as old:
+      old_reader = csv.reader(old)
 
-  return file_list
+    # check if old csv has tracks that have since been deleted
+      for row in old_reader:
+        if len(row) > 1:  # filter out empty rows
+          if row[0] in file_list:
+            csv_current.append(row)
 
 
-def get_bpm_list(file_list):
+      # check for any tracks that have been added
+      for row in file_list:
+        if row not in [row[0] for row in csv_current]:
+          new_tracks.append(row)
+
+    return csv_current, new_tracks
+
+  else:
+    print("No csv detected")
+    return [], file_list
+
+
+
+
+def get_bpm_list(new_tracks):
   """
   Compute BPM of each given file and return
   list of [file, bpm, beat times (in seconds)]
   """
   bpm_labels = [] # TODO Only process new files
 
-  for file in file_list:
+  for file in new_tracks:
     #Y is time series, sr is sample rate
     y, sr = librosa.load(file)
     bpm, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
@@ -53,23 +71,24 @@ def get_bpm_list(file_list):
   return bpm_labels
 
 
-def csv_generator(data):
+def csv_generator(current, new_labels):
   """Create and maintain reference file for users music library"""
   working_dir = os.path.join('data', getpass.getuser())
-
+  current.extend(new_labels)
   if not os.path.isdir(working_dir):
     os.mkdir(os.path.abspath(working_dir))
 
   with open(os.path.join(working_dir,'tempo_list.csv'), 'w') as write_file:
     writer = csv.writer(write_file)  # TODO add header for reading as table
-    for row in data:
+    for row in current:
       writer.writerow(row)
 
 
-
-def test(file_list):
+def test():
+  current, new = get_files()
   start = time.time()
-  thing = get_bpm_list(file_list)
+  new_labels = get_bpm_list(new)
   end = time.time()
   print("took {} secs".format(int(end-start)))
-  return thing
+  csv_generator(current, new_labels)
+
