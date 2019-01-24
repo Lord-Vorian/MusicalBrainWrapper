@@ -46,9 +46,9 @@ def get_bpm_list(file_list):
     #Y is time series, sr is sample rate
     y, sr = librosa.load(file)
     bpm, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
-    beat_times = librosa.frames_to_time(beat_frames, sr=sr)
+    #beat_times = librosa.frames_to_time(beat_frames, sr=sr)
 
-    bpm_labels.append([file, bpm])
+    bpm_labels.append([file, int(bpm)])
 
   return bpm_labels
 
@@ -66,28 +66,10 @@ def csv_generator(data):
       writer.writerow(row)
 
 
-def test():
-  # start_time = int(time.time())
-  # file_list = get_files()
-  # print('{} seconds to get list of files'.format(int(time.time())-start_time))
-  # start_time = int(time.time())
-  # bpm_labels = get_bpm_list(file_list)
-  # print('{} seconds to get bpm of files'.format(int(time.time())-start_time))
-  # start_time = int(time.time())
-  # csv_generator(bpm_labels)
-  # print('{} seconds to write csv'.format(int(time.time())-start_time))
-    elapsed = 0
-    invasions = 0
-    invading = False
-    while elapsed < 3600:
-      # TODO loop chill bpm
-      elapsed += 1
-      if not int(time.time()) % 5:
-        if signaler.invader_detect() and not invading:
-          # TODO play fast bpm
-          print('New invasion # {}'.format(invasions))
-          invasions += 1
-          invading = True
-        elif not signaler.invader_detect():
-          invading = False
-      time.sleep(1)
+
+def test(file_list):
+  start = time.time()
+  thing = get_bpm_list(file_list)
+  end = time.time()
+  print("took {} secs".format(int(end-start)))
+  return thing
