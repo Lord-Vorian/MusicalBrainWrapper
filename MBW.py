@@ -11,22 +11,15 @@ from os import path
 from  vibe_parser import WORKING_DIR
 
 
-
-
 ############################### Get Filenames #################################
-
-
-
-
-
 cleaned_list = []
 
 with open(path.join(WORKING_DIR,'tempo_list.csv'), 'r') as unread_file:
   read_file = csv.reader(unread_file)
-  for i in read_file:
-    if len(i) > 1:  # ignore blank lines
-      if float(i[1]) > 120:  # only fast music!
-        cleaned_list.append(i)
+  for line in read_file:
+    # ignore blank lines and only fast music!
+    if len(line) > 1 and float(line[1]) > 120:
+        cleaned_list.append(line)
 
 cleaned_list = sorted(cleaned_list, key=lambda i: float(i[1]), reverse=True)
 
@@ -49,6 +42,7 @@ def fadeIn(player, seconds):
     player.audio_set_volume(100 - int(seconds/step))
     seconds -= step
     sleep(step)
+
 
 def fadeOut(player, seconds):
   """
@@ -85,12 +79,9 @@ def test(player):
       elif signaler.invader_detect() and invading > 0:
         invading = 2
 
-
       elif invading > 0 and not player.is_playing():
         player.set_media(instance.media_new(choice(cleaned_list)[0]))
         fadeIn(player, 1)
-
-
       
       elif not signaler.invader_detect():
         invading -= 1
