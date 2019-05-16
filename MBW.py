@@ -69,15 +69,13 @@ def test(player):
     # TODO loop chill bpm
     if not int(time()) % 5:
 
-      if signaler.invader_detect() and invading <= 0:
-        player.set_media(instance.media_new(choice(cleaned_list)[0]))
-        fadeIn(player, 2)
-        print('New invasion # {}'.format(invasions))
-        invasions += 1
+      if signaler.invader_detect():
         invading = 2
-
-      elif signaler.invader_detect() and invading > 0:
-        invading = 2
+        if signaler.invader_detect() and invading <= 0:
+          player.set_media(instance.media_new(choice(cleaned_list)[0]))
+          fadeIn(player, 2)
+          print('New invasion # {}'.format(invasions))
+          invasions += 1
 
       elif invading > 0 and not player.is_playing():
         player.set_media(instance.media_new(choice(cleaned_list)[0]))
