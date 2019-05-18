@@ -8,7 +8,7 @@ import csv, signaler, vlc
 from time import time, sleep
 from random import random, choice
 from os import path
-from  vibe_parser import WORKING_DIR
+from vibe_parser import WORKING_DIR
 
 
 

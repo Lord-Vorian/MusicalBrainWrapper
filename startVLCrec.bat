@@ -1,0 +1,2 @@
+set /A stamp=%1
+"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe" --qt-start-minimized screen:// :screen-fps=10 :screen-mouse-image=C:\mouse.png :sout=#transcode{vcodec=h264,vb=0,scale=0,acodec=mp4a,ab=128,channels=2,samplerate=44100}:file{dst=C:\\Videos\\%stamp%.mp4} :no-sout-rtp-sap :no-sout-standard-sap :ttl=1 :sout-keep :rc-fake-tty
