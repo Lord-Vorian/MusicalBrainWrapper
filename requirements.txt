@@ -5,7 +5,7 @@ librosa==0.6.3
 llvmlite==0.28.0
 numba==0.43.1
 numpy==1.16.3
-Pillow==6.0.0
+Pillow==8.2.0
 PyAutoGUI==0.9.42
 PyGetWindow==0.0.4
 PyMsgBox==1.0.6
